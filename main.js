@@ -27,7 +27,7 @@ async function run () {
         console.log(`Results for ${filename}: correct`)
       } else {
         console.log(`Results for ${filename}: incorrect`)
-        core.setFailed(
+        core.info(
           `File ${filename} is incorrect, see the troubleshooting step for help.`
         )
         core.setOutput('report', {
