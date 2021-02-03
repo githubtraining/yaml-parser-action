@@ -39,7 +39,7 @@ async function run () {
         )
         core.setOutput('report', {
           type: 'actions',
-          level: 'warning',
+          level: 'fatal',
           msg:
           `Expected ${filename} to contain the cron syntax ${answers[filename]}, got ${doc.on.schedule[0].cron.trim()}`
         })
