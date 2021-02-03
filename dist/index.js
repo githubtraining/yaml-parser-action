@@ -38,7 +38,7 @@ async function run () {
           `File ${filename} is incorrect, see the troubleshooting step for help.`
         )
         core.setOutput('report', {
-          type: 'issue',
+          type: 'actions',
           level: 'warning',
           msg:
           `Expected ${filename} to contain the cron syntax ${answers[filename]}, got ${doc.on.schedule[0].cron.trim()}`
