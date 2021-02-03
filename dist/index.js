@@ -35,7 +35,7 @@ async function run () {
       } else {
         console.log(`Results for ${filename}: incorrect`)
         core.setFailed(
-          `File ${filename} is incorrect, see the troubleshooting step for help.`
+          `File ${filename} is incorrect, click on the Troubleshooting step of this workflow for more info.`
         )
         core.setOutput('report', {
           type: 'actions',
