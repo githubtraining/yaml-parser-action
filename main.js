@@ -2,7 +2,7 @@ const core = require('@actions/core')
 const yaml = require('js-yaml')
 const fs = require('fs')
 
-async function run () {
+async function run() {
   try {
     const files = core.getInput('files').split(',')
     //   TODO: verify the proper files were passed and learner didn't tamper with grading.yml
@@ -10,7 +10,7 @@ async function run () {
     const answers = {
       'stale-daily': '0 0 * * *',
       'stale-weekly': '0 0 * * MON',
-      'stale-monthly': '0 0 1 * *'
+      'stale-monthly': '0 0 1 * *',
     }
 
     files.forEach((file) => {
@@ -18,8 +18,8 @@ async function run () {
 
       const doc = yaml.load(
         fs.readFileSync(
-        `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
-        'utf8'
+          `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
+          'utf8'
         )
       )
       // TODO: if desired keys dont' exist prevent failure but provide feedback
@@ -33,8 +33,9 @@ async function run () {
         core.setOutput('report', {
           type: 'actions',
           level: 'fatal',
-          msg:
-          `Expected ${filename} to contain the cron syntax ${answers[filename]}, got ${doc.on.schedule[0].cron.trim()}`
+          msg: `Expected ${filename} to contain the cron syntax ${
+            answers[filename]
+          }, got ${doc.on.schedule[0].cron.trim()}`,
         })
       }
     })
