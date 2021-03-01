@@ -2976,13 +2976,12 @@ async function run() {
     const results = gradeLearner(files, answers);
     core.setOutput("report", results);
     // TODO pinpoint the exact file that failed
-    if (
-      results["stale-daily"].report.level !== "info" ||
-      results["stale-monthly"].report.level !== "info" ||
-      results["stale-weekly"].report.level !== "info"
-    ) {
-      throw results;
-    }
+    const resultsArray = Object.entries(results);
+    resultsArray.forEach((res) => {
+      if (res[1].report.isCorrect !== true || res[1].report.level !== "info") {
+        throw res;
+      }
+    });
   } catch (error) {
     core.setFailed(error);
   }
@@ -4527,15 +4526,17 @@ module.exports = (files, answers) => {
     );
 
     if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
-      results[filename].isCorrect = true;
+      // results[filename].isCorrect = true;
       results[filename].report = {
+        isCorrect: true,
         type: "actions",
         level: "info",
         msg: `Results for ${filename}: correct`,
       };
     } else {
-      results[filename].isCorrect = false;
+      // results[filename].isCorrect = false;
       results[filename].report = {
+        isCorrect: false,
         type: "actions",
         level: "fatal",
         msg: `Expected ${filename} to contain the cron syntax ${

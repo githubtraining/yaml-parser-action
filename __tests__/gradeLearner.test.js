@@ -21,8 +21,9 @@ describe("gradeLearner", () => {
     expect(JSON.stringify(res)).toBe(
       JSON.stringify({
         "some-test": {
-          isCorrect: true,
+          //   isCorrect: true,
           report: {
+            isCorrect: true,
             type: "actions",
             level: "info",
             msg: "Results for some-test: correct",
@@ -50,8 +51,9 @@ describe("gradeLearner", () => {
     expect(JSON.stringify(res)).toBe(
       JSON.stringify({
         "some-test": {
-          isCorrect: true,
+          //   isCorrect: true,
           report: {
+            isCorrect: true,
             type: "actions",
             level: "info",
             msg: "Results for some-test: correct",
@@ -79,8 +81,9 @@ describe("gradeLearner", () => {
     expect(JSON.stringify(res)).toBe(
       JSON.stringify({
         "some-test": {
-          isCorrect: false,
+          //   isCorrect: false,
           report: {
+            isCorrect: false,
             type: "actions",
             level: "fatal",
             msg:
