@@ -2974,7 +2974,8 @@ async function run() {
     };
 
     const results = gradeLearner(files, answers);
-    if (results.type === "fatal") {
+    core.setOutput("report", results);
+    if (results.type !== "info") {
       throw results.msg;
     }
   } catch (error) {
