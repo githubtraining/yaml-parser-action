@@ -2958,36 +2958,36 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
 /***/ 513:
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
-const core = __webpack_require__(357);
+const core = __webpack_require__(357)
 
-const gradeLearner = __webpack_require__(862);
+const gradeLearner = __webpack_require__(862)
 
 async function run() {
   try {
-    const files = core.getInput("files").split(",");
+    const files = core.getInput('files').split(',')
     //   TODO: verify the proper files were passed and learner didn't tamper with grading.yml
 
     const answers = {
-      "stale-daily": ["0 0 * * *"],
-      "stale-weekly": ["0 0 * * MON", "0 0 * * 1"],
-      "stale-monthly": ["0 0 1 * *"],
-    };
+      'stale-daily': ['0 0 * * *'],
+      'stale-weekly': ['0 0 * * MON', '0 0 * * 1'],
+      'stale-monthly': ['0 0 1 * *'],
+    }
 
-    const results = gradeLearner(files, answers);
-    core.setOutput("report", results);
+    const results = gradeLearner(files, answers)
+    core.setOutput('report', results)
     // TODO pinpoint the exact file that failed
-    const resultsArray = Object.entries(results);
+    const resultsArray = Object.entries(results)
     resultsArray.forEach((res) => {
-      if (res[1].report.isCorrect !== true || res[1].report.level !== "info") {
-        throw res;
+      if (res[1].report.isCorrect !== true || res[1].report.level !== 'info') {
+        throw res
       }
-    });
+    })
   } catch (error) {
-    core.setFailed(error);
+    core.setFailed(error)
   }
 }
 
-run();
+run()
 
 
 /***/ }),
@@ -4510,44 +4510,44 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
 /***/ 862:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
-const fs = __webpack_require__(747);
-const yaml = __webpack_require__(34);
+const fs = __webpack_require__(747)
+const yaml = __webpack_require__(34)
 
 module.exports = (files, answers) => {
-  let results = {};
+  let results = {}
   files.forEach((file) => {
-    const filename = file.replace(".yml", "");
-    results[filename] = {};
+    const filename = file.replace('.yml', '')
+    results[filename] = {}
     const doc = yaml.load(
       fs.readFileSync(
         `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
-        "utf8"
+        'utf8'
       )
-    );
+    )
 
     if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
       results[filename].report = {
         isCorrect: true,
-        type: "actions",
-        level: "info",
+        type: 'actions',
+        level: 'info',
         msg: `Results for ${filename}: correct`,
-      };
+      }
     } else {
       results[filename].report = {
         isCorrect: false,
-        type: "actions",
-        level: "fatal",
+        type: 'actions',
+        level: 'fatal',
         msg: `Expected ${filename} to contain the cron syntax ${
           answers[filename][0]
         } or ${
           answers[filename][1]
         }, but got ${doc.on.schedule[0].cron.trim()}`,
-      };
+      }
     }
-  });
+  })
 
-  return results;
-};
+  return results
+}
 
 
 /***/ }),
