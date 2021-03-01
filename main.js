@@ -24,7 +24,7 @@ async function run() {
       );
 
       // TODO: if desired keys dont' exist prevent failure but provide feedback
-      if (answers[filename].trim().includes(doc.on.schedule[0].cron.trim())) {
+      if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
         console.log(`Results for ${filename}: correct`);
       } else {
         console.log(`Results for ${filename}: incorrect`);
