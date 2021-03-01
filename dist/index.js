@@ -4526,7 +4526,6 @@ module.exports = (files, answers) => {
     );
 
     if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
-      // results[filename].isCorrect = true;
       results[filename].report = {
         isCorrect: true,
         type: "actions",
@@ -4534,7 +4533,6 @@ module.exports = (files, answers) => {
         msg: `Results for ${filename}: correct`,
       };
     } else {
-      // results[filename].isCorrect = false;
       results[filename].report = {
         isCorrect: false,
         type: "actions",
