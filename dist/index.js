@@ -4518,7 +4518,7 @@ module.exports = (files, answers) => {
   let results = {};
   files.forEach((file) => {
     const filename = file.replace(".yml", "");
-    results[file] = {};
+    results[filename] = {};
     const doc = yaml.load(
       fs.readFileSync(
         `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
