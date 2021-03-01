@@ -20,7 +20,7 @@ describe("gradeLearner", () => {
 
     expect(JSON.stringify(res)).toBe(
       JSON.stringify({
-        "some-test.yml": {
+        "some-test": {
           isCorrect: true,
           report: {
             type: "actions",
@@ -49,7 +49,7 @@ describe("gradeLearner", () => {
 
     expect(JSON.stringify(res)).toBe(
       JSON.stringify({
-        "some-test.yml": {
+        "some-test": {
           isCorrect: true,
           report: {
             type: "actions",
@@ -78,7 +78,7 @@ describe("gradeLearner", () => {
 
     expect(JSON.stringify(res)).toBe(
       JSON.stringify({
-        "some-test.yml": {
+        "some-test": {
           isCorrect: false,
           report: {
             type: "actions",

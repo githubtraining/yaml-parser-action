@@ -15,8 +15,13 @@ async function run() {
 
     const results = gradeLearner(files, answers);
     core.setOutput("report", results);
-    if (results.type !== "info") {
-      throw results.msg;
+    // TODO pinpoint the exact file that failed
+    if (
+      results["stale-daily"].report.level !== "info" ||
+      results["stale-monthly"].report.level !== "info" ||
+      results["stale-weekly"].report.level !== "info"
+    ) {
+      throw results;
     }
   } catch (error) {
     core.setFailed(error);

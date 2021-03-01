@@ -2975,8 +2975,13 @@ async function run() {
 
     const results = gradeLearner(files, answers);
     core.setOutput("report", results);
-    if (results.type !== "info") {
-      throw results.msg;
+    // TODO pinpoint the exact file that failed
+    if (
+      results["stale-daily"].report.level !== "info" ||
+      results["stale-monthly"].report.level !== "info" ||
+      results["stale-weekly"].report.level !== "info"
+    ) {
+      throw results;
     }
   } catch (error) {
     core.setFailed(error);
@@ -4512,8 +4517,8 @@ const yaml = __webpack_require__(34);
 module.exports = (files, answers) => {
   let results = {};
   files.forEach((file) => {
-    results[file] = {};
     const filename = file.replace(".yml", "");
+    results[file] = {};
     const doc = yaml.load(
       fs.readFileSync(
         `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
@@ -4522,15 +4527,15 @@ module.exports = (files, answers) => {
     );
 
     if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
-      results[file].isCorrect = true;
-      results[file].report = {
+      results[filename].isCorrect = true;
+      results[filename].report = {
         type: "actions",
         level: "info",
         msg: `Results for ${filename}: correct`,
       };
     } else {
-      results[file].isCorrect = false;
-      results[file].report = {
+      results[filename].isCorrect = false;
+      results[filename].report = {
         type: "actions",
         level: "fatal",
         msg: `Expected ${filename} to contain the cron syntax ${
