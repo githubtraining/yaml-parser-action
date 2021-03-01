@@ -2959,8 +2959,8 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
 const core = __webpack_require__(357);
-const yaml = __webpack_require__(34);
-const fs = __webpack_require__(747);
+
+const gradeLearner = __webpack_require__(862);
 
 async function run() {
   try {
@@ -2973,33 +2973,10 @@ async function run() {
       "stale-monthly": ["0 0 1 * *"],
     };
 
-    files.forEach((file) => {
-      const filename = file.replace(".yml", "");
-
-      const doc = yaml.load(
-        fs.readFileSync(
-          `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
-          "utf8"
-        )
-      );
-
-      // TODO: if desired keys dont' exist prevent failure but provide feedback
-      if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
-        console.log(`Results for ${filename}: correct`);
-      } else {
-        console.log(`Results for ${filename}: incorrect`);
-        core.setFailed(
-          `File ${filename} is incorrect, click on the Troubleshooting step of this workflow for more info.`
-        );
-        core.setOutput("report", {
-          type: "actions",
-          level: "fatal",
-          msg: `Expected ${filename} to contain the cron syntax ${
-            answers[filename]
-          }, got ${doc.on.schedule[0].cron.trim()}`,
-        });
-      }
-    });
+    const results = gradeLearner(files, answers);
+    if (results.type === "fatal") {
+      throw results.msg;
+    }
   } catch (error) {
     core.setFailed(error);
   }
@@ -4521,6 +4498,51 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
   construct: function (data) { return data !== null ? data : []; }
 });
+
+
+/***/ }),
+
+/***/ 862:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+const fs = __webpack_require__(747);
+const yaml = __webpack_require__(34);
+
+module.exports = (files, answers) => {
+  let results = {};
+  files.forEach((file) => {
+    results[file] = {};
+    const filename = file.replace(".yml", "");
+    const doc = yaml.load(
+      fs.readFileSync(
+        `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
+        "utf8"
+      )
+    );
+
+    if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
+      results[file].isCorrect = true;
+      results[file].report = {
+        type: "actions",
+        level: "info",
+        msg: `Results for ${filename}: correct`,
+      };
+    } else {
+      results[file].isCorrect = false;
+      results[file].report = {
+        type: "actions",
+        level: "fatal",
+        msg: `Expected ${filename} to contain the cron syntax ${
+          answers[filename][0]
+        } or ${
+          answers[filename][1]
+        }, but got ${doc.on.schedule[0].cron.trim()}`,
+      };
+    }
+  });
+
+  return results;
+};
 
 
 /***/ }),

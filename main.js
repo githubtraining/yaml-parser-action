@@ -1,6 +1,6 @@
 const core = require("@actions/core");
-const yaml = require("js-yaml");
-const fs = require("fs");
+
+const gradeLearner = require("./lib/gradeLearner");
 
 async function run() {
   try {
@@ -13,33 +13,10 @@ async function run() {
       "stale-monthly": ["0 0 1 * *"],
     };
 
-    files.forEach((file) => {
-      const filename = file.replace(".yml", "");
-
-      const doc = yaml.load(
-        fs.readFileSync(
-          `${process.env.GITHUB_WORKSPACE}/.github/workflows/${file}`,
-          "utf8"
-        )
-      );
-
-      // TODO: if desired keys dont' exist prevent failure but provide feedback
-      if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
-        console.log(`Results for ${filename}: correct`);
-      } else {
-        console.log(`Results for ${filename}: incorrect`);
-        core.setFailed(
-          `File ${filename} is incorrect, click on the Troubleshooting step of this workflow for more info.`
-        );
-        core.setOutput("report", {
-          type: "actions",
-          level: "fatal",
-          msg: `Expected ${filename} to contain the cron syntax ${
-            answers[filename]
-          }, got ${doc.on.schedule[0].cron.trim()}`,
-        });
-      }
-    });
+    const results = gradeLearner(files, answers);
+    if (results.type === "fatal") {
+      throw results.msg;
+    }
   } catch (error) {
     core.setFailed(error);
   }
