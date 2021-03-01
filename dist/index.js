@@ -2968,9 +2968,9 @@ async function run() {
     //   TODO: verify the proper files were passed and learner didn't tamper with grading.yml
 
     const answers = {
-      "stale-daily": "0 0 * * *",
+      "stale-daily": ["0 0 * * *"],
       "stale-weekly": ["0 0 * * MON", "0 0 * * 1"],
-      "stale-monthly": "0 0 1 * *",
+      "stale-monthly": ["0 0 1 * *"],
     };
 
     files.forEach((file) => {
@@ -2984,7 +2984,7 @@ async function run() {
       );
 
       // TODO: if desired keys dont' exist prevent failure but provide feedback
-      if (answers[filename].trim().includes(doc.on.schedule[0].cron.trim())) {
+      if (answers[filename].includes(doc.on.schedule[0].cron.trim())) {
         console.log(`Results for ${filename}: correct`);
       } else {
         console.log(`Results for ${filename}: incorrect`);
